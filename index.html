@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alex Rivera — Full-Stack Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0E14;
+    --bg-elevated:#121826;
+    --bg-card:#161D2E;
+    --border:#232B3D;
+    --border-hover:#3A4560;
+    --text-primary:#E7E9EE;
+    --text-muted:#8891A5;
+    --text-dim:#5B6478;
+    --amber:#E8B854;
+    --amber-dim:#8A6B33;
+    --teal:#4FD1AE;
+    --rose:#E8687A;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+    --radius: 10px;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--bg);
+    color:var(--text-primary);
+    font-family:var(--sans);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+
+  ::selection{ background:var(--amber); color:#0B0E14; }
+
+  a{ color:inherit; text-decoration:none; }
+
+  .wrap{ max-width:1100px; margin:0 auto; padding:0 32px; }
+
+  /* ---------- utility: reveal on scroll ---------- */
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* ---------- background grid texture ---------- */
+  .bg-grid{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(232,184,84,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,184,84,0.035) 1px, transparent 1px);
+    background-size:48px 48px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 20%, transparent 75%);
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(11,14,20,0.82);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  nav{
+    max-width:1100px; margin:0 auto; padding:18px 32px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{
+    font-family:var(--mono); font-weight:700; font-size:16px; color:var(--text-primary);
+    display:flex; align-items:center; gap:8px;
+  }
+  .logo .prompt{ color:var(--amber); }
+  .nav-links{ display:flex; gap:32px; font-family:var(--mono); font-size:13.5px; color:var(--text-muted); }
+  .nav-links a{ position:relative; padding:4px 0; transition:color .2s; }
+  .nav-links a:hover{ color:var(--text-primary); }
+  .nav-links a::before{ content:'// '; color:var(--amber); opacity:0; transition:opacity .2s; }
+  .nav-links a:hover::before{ opacity:1; }
+  .nav-cta{
+    font-family:var(--mono); font-size:13px; font-weight:600;
+    color:var(--bg); background:var(--amber); padding:9px 16px; border-radius:6px;
+    transition:transform .2s, box-shadow .2s;
+  }
+  .nav-cta:hover{ transform:translateY(-1px); box-shadow:0 6px 20px rgba(232,184,84,0.25); }
+  .menu-toggle{ display:none; background:none; border:1px solid var(--border); border-radius:6px; padding:8px 10px; color:var(--text-primary); cursor:pointer; }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative; z-index:1;
+    padding:96px 0 80px;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px; align-items:center;
+  }
+  .eyebrow{
+    font-family:var(--mono); font-size:13px; color:var(--teal);
+    display:flex; align-items:center; gap:10px; margin-bottom:20px; letter-spacing:0.02em;
+  }
+  .eyebrow .dot{ width:7px; height:7px; border-radius:50%; background:var(--teal); box-shadow:0 0 0 3px rgba(79,209,174,0.15); animation:pulse 2s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.4;} }
+
+  h1{
+    font-family:var(--mono); font-weight:800; font-size:44px; line-height:1.15;
+    letter-spacing:-0.01em; margin-bottom:20px;
+  }
+  h1 .accent{ color:var(--amber); }
+
+  .hero p.sub{ color:var(--text-muted); font-size:16.5px; max-width:480px; margin-bottom:32px; }
+
+  .hero-actions{ display:flex; gap:14px; flex-wrap:wrap; }
+  .btn{
+    font-family:var(--mono); font-size:13.5px; font-weight:600; padding:13px 22px; border-radius:8px;
+    display:inline-flex; align-items:center; gap:8px; transition:all .2s; border:1px solid transparent;
+  }
+  .btn-primary{ background:var(--amber); color:#0B0E14; }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 10px 28px rgba(232,184,84,0.22); }
+  .btn-ghost{ border-color:var(--border); color:var(--text-primary); }
+  .btn-ghost:hover{ border-color:var(--border-hover); background:var(--bg-elevated); }
+
+  /* terminal window */
+  .terminal{
+    background:var(--bg-card); border:1px solid var(--border); border-radius:12px;
+    overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,0.45);
+  }
+  .term-bar{
+    display:flex; align-items:center; gap:8px; padding:12px 16px; border-bottom:1px solid var(--border);
+    background:var(--bg-elevated);
+  }
+  .term-dot{ width:10px; height:10px; border-radius:50%; }
+  .term-bar .term-dot:nth-child(1){ background:#E86868; }
+  .term-bar .term-dot:nth-child(2){ background:#E8B854; }
+  .term-bar .term-dot:nth-child(3){ background:#4FD1AE; }
+  .term-title{ margin-left:8px; font-family:var(--mono); font-size:12px; color:var(--text-dim); }
+  .term-body{ padding:22px 20px; font-family:var(--mono); font-size:13.5px; color:var(--text-muted); min-height:230px; }
+  .term-body .line{ margin-bottom:6px; }
+  .term-body .key{ color:var(--teal); }
+  .term-body .str{ color:var(--amber); }
+  .term-body .punc{ color:var(--text-dim); }
+  #typed-line::after{ content:'▍'; color:var(--amber); animation:blink 1s step-end infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ---------- section shared ---------- */
+  section{ position:relative; z-index:1; padding:88px 0; border-top:1px solid var(--border); }
+  .sec-label{
+    font-family:var(--mono); font-size:13px; color:var(--amber); margin-bottom:12px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .sec-label::before{ content:'//'; color:var(--text-dim); }
+  .sec-title{ font-family:var(--mono); font-weight:700; font-size:28px; margin-bottom:40px; }
+
+  /* ---------- about ---------- */
+  .about-grid{ display:grid; grid-template-columns:280px 1fr; gap:56px; align-items:start; }
+
+  .photo-frame{
+    border:1px solid var(--border); border-radius:12px; overflow:hidden; background:var(--bg-card);
+  }
+  .photo-frame .term-bar{ padding:10px 14px; }
+  .photo-slot{
+    aspect-ratio:1/1; width:100%;
+    background:
+      repeating-linear-gradient(45deg, rgba(232,184,84,0.04) 0 10px, transparent 10px 20px),
+      linear-gradient(160deg, #1A2236, #0F1420);
+    display:flex; align-items:center; justify-content:center; position:relative;
+  }
+  .photo-slot img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .photo-placeholder{
+    display:flex; flex-direction:column; align-items:center; gap:10px; color:var(--text-dim);
+    font-family:var(--mono); font-size:12px; text-align:center; padding:20px;
+  }
+  .photo-placeholder svg{ opacity:0.5; }
+
+  .about-bio p{ color:var(--text-muted); margin-bottom:16px; max-width:640px; }
+  .about-bio strong{ color:var(--text-primary); font-weight:600; }
+
+  .skills{ margin-top:28px; }
+  .skills .file-label{ font-family:var(--mono); font-size:12px; color:var(--text-dim); margin-bottom:12px; }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:10px; }
+  .chip{
+    font-family:var(--mono); font-size:12.5px; padding:7px 13px; border-radius:6px;
+    background:var(--bg-card); border:1px solid var(--border); color:var(--text-muted);
+    transition:all .2s;
+  }
+  .chip:hover{ border-color:var(--teal); color:var(--teal); transform:translateY(-2px); }
+
+  /* ---------- projects ---------- */
+  .project-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; }
+  .project-card{
+    background:var(--bg-card); border:1px solid var(--border); border-radius:12px; overflow:hidden;
+    transition:transform .25s, border-color .25s, box-shadow .25s;
+  }
+  .project-card:hover{ transform:translateY(-6px); border-color:var(--border-hover); box-shadow:0 18px 40px rgba(0,0,0,0.35); }
+  .project-shot{
+    aspect-ratio:16/10; width:100%;
+    background:linear-gradient(150deg, #1A2236, #0F1420);
+    display:flex; align-items:center; justify-content:center; position:relative;
+    border-bottom:1px solid var(--border);
+  }
+  .project-shot img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .project-shot .ph{ color:var(--text-dim); font-family:var(--mono); font-size:11.5px; display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .project-body{ padding:20px; }
+  .project-body .fname{ font-family:var(--mono); font-size:11.5px; color:var(--text-dim); margin-bottom:6px; }
+  .project-body h3{ font-size:17px; margin-bottom:8px; }
+  .project-body p{ color:var(--text-muted); font-size:14px; margin-bottom:16px; }
+  .tag-row{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
+  .tag{ font-family:var(--mono); font-size:11px; color:var(--teal); background:rgba(79,209,174,0.08); padding:3px 8px; border-radius:4px; }
+  .project-links{ display:flex; gap:16px; font-family:var(--mono); font-size:12.5px; }
+  .project-links a{ color:var(--text-muted); display:flex; align-items:center; gap:5px; transition:color .2s; }
+  .project-links a:hover{ color:var(--amber); }
+
+  /* ---------- experience: git log ---------- */
+  .gitlog{ position:relative; padding-left:28px; }
+  .gitlog::before{ content:''; position:absolute; left:5px; top:6px; bottom:6px; width:1px; background:var(--border); }
+  .commit{ position:relative; padding-bottom:36px; }
+  .commit:last-child{ padding-bottom:0; }
+  .commit::before{
+    content:''; position:absolute; left:-28px; top:4px; width:11px; height:11px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--amber);
+  }
+  .commit-hash{ font-family:var(--mono); font-size:12px; color:var(--amber); margin-bottom:4px; }
+  .commit-msg{ font-weight:600; font-size:16px; margin-bottom:4px; }
+  .commit-meta{ font-family:var(--mono); font-size:12px; color:var(--text-dim); margin-bottom:10px; }
+  .commit-body{ color:var(--text-muted); font-size:14.5px; max-width:640px; }
+
+  /* ---------- contact ---------- */
+  .contact-box{
+    background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:44px;
+    display:grid; grid-template-columns:1fr auto; align-items:center; gap:32px;
+  }
+  .contact-box h2{ font-family:var(--mono); font-size:24px; margin-bottom:10px; }
+  .contact-box h2 .punc{ color:var(--amber); }
+  .contact-box p{ color:var(--text-muted); max-width:420px; }
+  .contact-links{ display:flex; flex-direction:column; gap:12px; }
+  .contact-links a{
+    font-family:var(--mono); font-size:13.5px; display:flex; align-items:center; gap:10px;
+    color:var(--text-primary); padding:10px 16px; border:1px solid var(--border); border-radius:8px;
+    transition:all .2s; white-space:nowrap;
+  }
+  .contact-links a:hover{ border-color:var(--amber); color:var(--amber); transform:translateX(-3px); }
+
+  footer{ padding:32px 0; text-align:center; font-family:var(--mono); font-size:12px; color:var(--text-dim); border-top:1px solid var(--border); }
+  footer .accent{ color:var(--amber); }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 860px){
+    .hero{ grid-template-columns:1fr; padding-top:64px; }
+    .about-grid{ grid-template-columns:1fr; }
+    .photo-frame{ max-width:260px; }
+    .project-grid{ grid-template-columns:1fr; }
+    .contact-box{ grid-template-columns:1fr; text-align:left; }
+    .nav-links{ display:none; }
+    .menu-toggle{ display:block; }
+    h1{ font-size:32px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+    .reveal{ opacity:1; transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<header>
+  <nav>
+    <div class="logo"><span class="prompt">~/</span>alex.rivera</div>
+    <div class="nav-links">
+      <a href="#about">about</a>
+      <a href="#projects">projects</a>
+      <a href="#experience">experience</a>
+      <a href="#contact">contact</a>
+    </div>
+    <a href="#contact" class="nav-cta">get in touch</a>
+    <button class="menu-toggle" aria-label="Menu">☰</button>
+  </nav>
+</header>
+
+<main class="wrap">
+
+  <!-- HERO -->
+  <section class="hero" style="border-top:none; padding-top:96px;">
+    <div>
+      <div class="eyebrow"><span class="dot"></span>available for new roles</div>
+      <h1>Building software<br>that ships<span class="accent">.</span></h1>
+      <p class="sub">Full-stack developer focused on fast, reliable products — from database schema to the pixel on screen. Currently building developer tools at a Series B startup.</p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">view projects →</a>
+        <a href="#" class="btn btn-ghost">download résumé</a>
+      </div>
+    </div>
+    <div class="terminal">
+      <div class="term-bar">
+        <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
+        <span class="term-title">about-me.js</span>
+      </div>
+      <div class="term-body" id="term-body">
+        <div class="line"><span class="key">const</span> developer <span class="punc">=</span> {</div>
+        <div class="line" style="padding-left:20px;">name: <span class="str">'Alex Rivera'</span>,</div>
+        <div class="line" style="padding-left:20px;">role: <span class="str">'Full-Stack Developer'</span>,</div>
+        <div class="line" style="padding-left:20px;">stack: <span id="typed-line"></span></div>
+        <div class="line">}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="reveal">
+    <div class="sec-label">01. about</div>
+    <h2 class="sec-title">Who I am</h2>
+    <div class="about-grid">
+      <div class="photo-frame">
+        <div class="term-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span></div>
+        <div class="photo-slot">
+          <!-- REPLACE src below with your own photo, e.g. src="photo.jpg" -->
+          <img src="your-photo.jpg" alt="Alex Rivera"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="photo-placeholder" style="display:flex;">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+            add your-photo.jpg
+          </div>
+        </div>
+      </div>
+      <div class="about-bio">
+        <p>I'm a developer who likes <strong>owning problems end to end</strong> — from the first schema migration to the deploy that ships it. Over the past five years I've worked across small startups and larger teams, mostly on tools other developers use every day.</p>
+        <p>Outside of work I write about backend architecture, contribute to a couple of open-source CLI tools, and I'm slowly working through a personal project that turns spreadsheets into real APIs.</p>
+        <div class="skills">
+          <div class="file-label">// package.json — dependencies</div>
+          <div class="chip-row">
+            <span class="chip">TypeScript</span>
+            <span class="chip">React</span>
+            <span class="chip">Node.js</span>
+            <span class="chip">PostgreSQL</span>
+            <span class="chip">Python</span>
+            <span class="chip">Docker</span>
+            <span class="chip">AWS</span>
+            <span class="chip">GraphQL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="reveal">
+    <div class="sec-label">02. projects</div>
+    <h2 class="sec-title">Selected work</h2>
+    <div class="project-grid">
+
+      <div class="project-card">
+        <div class="project-shot">
+          <!-- REPLACE src with a real project screenshot -->
+          <img src="project-1.jpg" alt="Project one screenshot"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="ph" style="display:flex;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 5-5 4 4"/></svg>
+            add project-1.jpg
+          </div>
+        </div>
+        <div class="project-body">
+          <div class="fname">/projects/routewise</div>
+          <h3>RouteWise</h3>
+          <p>A logistics dashboard that recalculates delivery routes in real time as drivers report delays.</p>
+          <div class="tag-row"><span class="tag">React</span><span class="tag">Node</span><span class="tag">PostGIS</span></div>
+          <div class="project-links">
+            <a href="#">↗ live site</a>
+            <a href="#">⌥ source</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-shot">
+          <img src="project-2.jpg" alt="Project two screenshot"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="ph" style="display:flex;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 5-5 4 4"/></svg>
+            add project-2.jpg
+          </div>
+        </div>
+        <div class="project-body">
+          <div class="fname">/projects/sheetapi</div>
+          <h3>SheetAPI</h3>
+          <p>Turns any spreadsheet into a versioned REST API in under a minute, with auto-generated docs.</p>
+          <div class="tag-row"><span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag">Redis</span></div>
+          <div class="project-links">
+            <a href="#">↗ live site</a>
+            <a href="#">⌥ source</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-shot">
+          <img src="project-3.jpg" alt="Project three screenshot"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="ph" style="display:flex;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 5-5 4 4"/></svg>
+            add project-3.jpg
+          </div>
+        </div>
+        <div class="project-body">
+          <div class="fname">/projects/pixelboard</div>
+          <h3>PixelBoard</h3>
+          <p>A collaborative kanban board with offline support and conflict-free sync across devices.</p>
+          <div class="tag-row"><span class="tag">TypeScript</span><span class="tag">CRDT</span><span class="tag">IndexedDB</span></div>
+          <div class="project-links">
+            <a href="#">↗ live site</a>
+            <a href="#">⌥ source</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" class="reveal">
+    <div class="sec-label">03. experience</div>
+    <h2 class="sec-title">Work history</h2>
+    <div class="gitlog">
+      <div class="commit">
+        <div class="commit-hash">a3f9c2e</div>
+        <div class="commit-msg">Senior Full-Stack Developer — Northwind Labs</div>
+        <div class="commit-meta">2023 — present</div>
+        <div class="commit-body">Lead developer on the internal tooling team. Rebuilt the deploy pipeline, cutting release time from 40 minutes to under 6.</div>
+      </div>
+      <div class="commit">
+        <div class="commit-hash">7d1e88b</div>
+        <div class="commit-msg">Full-Stack Developer — Fieldhouse</div>
+        <div class="commit-meta">2021 — 2023</div>
+        <div class="commit-body">Owned the customer-facing dashboard from prototype to 50k monthly users. Introduced automated testing across the frontend.</div>
+      </div>
+      <div class="commit">
+        <div class="commit-hash">2c4a015</div>
+        <div class="commit-msg">Junior Developer — Studio Nine</div>
+        <div class="commit-meta">2019 — 2021</div>
+        <div class="commit-body">Built and maintained client marketing sites, then moved into product engineering on an internal CMS.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="reveal">
+    <div class="sec-label">04. contact</div>
+    <div class="contact-box">
+      <div>
+        <h2>Let's work together<span class="punc">_</span></h2>
+        <p>Open to full-time roles and select freelance projects. I usually reply within a day.</p>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:alex@example.com">✉ alex@example.com</a>
+        <a href="#">⌥ github.com/alexrivera</a>
+        <a href="#">in linkedin.com/in/alexrivera</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  built with care · <span class="accent">alex.rivera</span> © <span id="year"></span>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // typing effect for stack array
+  const stackText = "['TypeScript', 'React', 'Node.js']";
+  const el = document.getElementById('typed-line');
+  let i = 0;
+  function type(){
+    if(i <= stackText.length){
+      el.textContent = stackText.slice(0, i);
+      i++;
+      setTimeout(type, 35);
+    }
+  }
+  type();
+
+  // scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
